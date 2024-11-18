@@ -7,5 +7,5 @@ ADD https://www.w3schools.com/w3css/tryit.asp?filename=tryw3css_templates_band&s
 VOLUME testvol
 #USER abhi
 EXPOSE 80 8080
-#ENTRYPOINT 
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+ENTRYPOINT ping 
+CMD 192.168.0.110
