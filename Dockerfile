@@ -1,4 +1,4 @@
-From ubuntu
+FROM ubuntu
 MAINTAINER abhishek_sharma
 RUN apt-get update -y && apt install apache2 -y
 WORKDIR /var/www/html/
