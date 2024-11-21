@@ -4,26 +4,25 @@ volumes:
     backvol:
 ################################################################
 networks:
-    # this will create a default bridge network 
+    # this will create a default bridge network
     frontend:
-    # this will create a manually ip bridge network 
+    # this will create a manually ip bridge network
     backend:
         ipam:
             driver: default
-            config: 
+            config:
                 - subnet: 192.168.10.0/24
 
 
-    # this will create a manually macvlan  network 
+    # this will create a manually macvlan  network
     macvlan_ip:
           driver: macvlan          # driver type
-          driver_opts: 
-                parent: eth0         #net port number
+          driver_opts:
+                parent: enp0s3      #net port number
           ipam:
               config:
                   - subnet: 192.168.5.0/24
-                  - gateway: 192.168.5.1
-          
+
 ################################################################
 services:
 # this is container1 create using Dockerfile
@@ -36,40 +35,40 @@ services:
         - frontend
     ########### container dependent container to Database ################
     depends_on:
-        - db
+        - wordpress
     ######################################################################
-        
+
 # this is container2 create using Dockerfile
   db:
     image: mysql:5.6
-    enviroment:
-        MYSQL_ROOT_PASSWORD=redhat
-        MYSQL_USER=abhi
-        MYSQL_PASSWORD=1234ab
+    environment:
+          MYSQL_ROOT_PASSWORD: redhat
+          MYSQL_USER: abhi
+          MYSQL_PASSWORD: 1234ab
     volumes:
-        - backend:/var/lib/mysql
+        - backvol:/var/lib/mysql
     networks:
         - backend
-    
 
-# this is container3 create 
+
+# this is container3 create
   wordpress:
     image: wordpress
     ports:
-      - 
-    enviroment:
-        WORDPRESS_DB_HOST=db
-        WORDPRESS_DB_USER=abhi
-        WORDPRESS_DB_PASSWORD=1234ab
+      - 30030:80
+      - 30031:8080
+    environment:
+          WORDPRESS_DB_HOST: db
+          WORDPRESS_DB_USER: abhi
+          WORDPRESS_DB_PASSWORD: 1234ab
     volumes:
         - forntvol:/var/www/html
     networks:
         - macvlan_ip
         - backend
-    
+
     ########### container dependent container to Database ################
     depends_on:
-        - web1
+        - db
     ######################################################################
-    
-    
+
